@@ -7,14 +7,24 @@ class TodoContextProvider extends React.Component {
         super(props);
         this.state = {
             todos: [
-                {task: 'haz algo'},
+                {name: 'haz algo'},
+                {name: 'haz algo'},
+                {name: 'haz algo'},
+                {name: 'haz algo'},
+                {name: 'haz algo'},
+                {name: 'haz algo'},
             ],
         };
     }
 
     //create
-    createTodo(){
-
+    createTodo(event, todo){
+        event.preventDefault();
+        let data = [...this.state.todos];
+        data.push(todo);
+        this.setState({
+            todos: data,
+        });
     }
     
     //read
