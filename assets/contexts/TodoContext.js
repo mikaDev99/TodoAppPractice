@@ -16,11 +16,17 @@ class TodoContextProvider extends React.Component {
     //create
     createTodo(event, todo){
         event.preventDefault();
-        let data = [...this.state.todos];
+        axios.post('/api/todo/create', todo)
+        .then(response => {
+            console.log(response.data);
+            let data = [...this.state.todos];
         data.push(todo);
         this.setState({
             todos: data,
         });
+        }).catch( error =>{
+            console.error(error);
+        })
     }
     
     //read
@@ -37,7 +43,9 @@ class TodoContextProvider extends React.Component {
     
     //update
     updateTodo(data){
-        let todos = [...this.state.todos];
+        axios.put('/api/todo/update/' + data.id, data)
+        .then(response =>{
+            let todos = [...this.state.todos];
         let todo = todos.find(todo => {
            return todo.id === data.id;
         });
@@ -47,6 +55,9 @@ class TodoContextProvider extends React.Component {
         this.setState({
             todos: todos, 
         });
+        }).catch(error =>{
+            console.error(error);
+        })
     }
     
     //delete
