@@ -1,13 +1,4 @@
-import {
-  IconButton,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  TextField,
-  Typography,
-} from "@material-ui/core";
+import { IconButton, makeStyles, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography,} from "@material-ui/core";
 import React, { Fragment, useContext, useState } from "react";
 import { TodoContext } from "../contexts/TodoContext";
 import AddIcon from "@material-ui/icons/Add";
@@ -16,6 +7,12 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import DoneIcon from "@material-ui/icons/Done";
 import CloseIcon from "@material-ui/icons/Close";
 import DeleteDialog from "./DeleteDialog";
+
+const useStyles = makeStyles(theme => ({
+  thead: {
+    backgroundColor: 'red'
+  }
+}));
 
 function TodoTable() {
   const context = useContext(TodoContext);
@@ -28,6 +25,8 @@ function TodoTable() {
     false
   );
   const [todoToBeDelete, setTodoToBeDelete] = useState(null);
+
+  const classes = useStyles();
 
   const onCreateSubmit = (event) => {
     event.preventDefault();
@@ -52,7 +51,7 @@ function TodoTable() {
   return (
     <Fragment>
       <Table>
-        <TableHead>
+        <TableHead className={classes.thead}>
           <TableRow>
             <TableCell>Tareas</TableCell>
             <TableCell>Descripciones</TableCell>

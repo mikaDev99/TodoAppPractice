@@ -3,9 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Todo;
+use App\Form\TodoType;
 use App\Repository\TodoRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -49,6 +51,22 @@ class TodoController extends AbstractController
     {
         $content = json_decode($request->getContent());
 
+
+        $form = $this->createForm(TodoType::class);
+        $form->submit((array)$content);
+
+        if (!$form->isValid()) {
+            $errors = [];
+            foreach($form->getErrors(true, true) as $error){
+                $propertyName = $error->getOrigin()->getName();
+                $errors[$propertyName] = $error->getMessage();
+            }
+
+            return $this->json([
+                'message' => ['text' => join("\n", $errors), 'level' => 'error'],
+            ]);
+        }
+
         $todo = new Todo();
 
         $todo->setTask($content->task);
@@ -79,6 +97,26 @@ class TodoController extends AbstractController
     public function update(Request $request, Todo $todo)
     {
         $content = json_decode($request->getContent());
+        
+
+        $form = $this->createForm(TodoType::class);
+        $nonObject = (array)$content;
+        unset($nonObject['id']);
+        dd($nonObject);
+        $form->submit($nonObject);
+
+        if (!$form->isValid()) {
+            $errors = [];
+            foreach($form->getErrors(true, true) as $error){
+                $propertyName = $error->getOrigin()->getName();
+                $errors[$propertyName] = $error->getMessage();
+            }
+
+            return $this->json([
+                'message' => ['text' => join("\n", $errors), 'level' => 'error'],
+            ]);
+        }
+
 
         if ($todo->getTask() === $content->task && $todo->getDescription() === $content->description) {
             return $this->json([
